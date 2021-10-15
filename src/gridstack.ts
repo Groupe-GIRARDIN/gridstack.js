@@ -80,6 +80,7 @@ const GridDefaults: GridStackOptions = {
   },
   marginUnit: 'px',
   cellHeightUnit: 'px',
+  cellWidthUnit: 'px',
   disableOneColumnMode: false,
   oneColumnModeDomSort: false
 };
@@ -309,6 +310,9 @@ export class GridStack {
       }
       this.cellHeight(this.opts.cellHeight, false);
     }
+    let data = Utils.parseWidth(this.opts.cellWidth);
+    this.opts.cellWidthUnit = data.unit;
+    this.opts.cellWidth = data.w;
 
     this.el.classList.add(this.opts._styleSheetClass);
 
@@ -365,6 +369,10 @@ export class GridStack {
     this._setupRemoveDrop();
     this._setupAcceptWidget();
     this._updateWindowResizeEvent();
+    
+    this.el.style.setProperty('--gs-col', this.opts.column.toString());
+    this.el.style.setProperty('--gs-cell-width', this.opts.cellWidth.toString() + this.opts.cellWidthUnit);
+    this.el.style.setProperty('--gs-cell-height', this.opts.cellHeight.toString() + this.opts.cellHeightUnit);
   }
 
   /**
@@ -682,6 +690,7 @@ export class GridStack {
 
     this.el.classList.remove('grid-stack-' + oldColumn);
     this.el.classList.add('grid-stack-' + column);
+    this.el.style.setProperty('--gs-col', column.toString());
     this.opts.column = this.engine.column = column;
 
     // update the items now - see if the dom order nodes should be passed instead (else default to current list)
@@ -1255,10 +1264,15 @@ export class GridStack {
 
   /** @internal call to write position x,y,w,h attributes back to element */
   private _writePosAttr(el: HTMLElement, n: GridStackPosition): GridStack {
-    if (n.x !== undefined && n.x !== null) { el.setAttribute('gs-x', String(n.x)); }
-    if (n.y !== undefined && n.y !== null) { el.setAttribute('gs-y', String(n.y)); }
-    if (n.w) { el.setAttribute('gs-w', String(n.w)); }
-    if (n.h) { el.setAttribute('gs-h', String(n.h)); }
+    if (n.x !== undefined && n.x !== null) { el.setAttribute('gs-x', String(n.x)); el.style.setProperty('--gs-x', String(n.x)); }
+    if (n.y !== undefined && n.y !== null) { el.setAttribute('gs-y', String(n.y)); el.style.setProperty('--gs-y', String(n.y)); }
+    if (n.w) { el.setAttribute('gs-w', String(n.w)); el.style.setProperty('--gs-w', String(n.w)); }
+    if (n.h) { el.setAttribute('gs-h', String(n.h)); el.style.setProperty('--gs-h', String(n.h)); }
+    if ((n.w && n.x !== undefined && n.x !== null && n.w + n.x == this.opts.column) || n.w == this.opts.column) {
+        el.style.setProperty('--gs-xlast', '1');
+    } else {
+        el.style.setProperty('--gs-xlast', '0');
+    }
     return this;
   }
 

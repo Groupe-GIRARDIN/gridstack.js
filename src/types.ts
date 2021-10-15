@@ -68,6 +68,16 @@ export interface GridStackOptions {
   /** (internal) unit for cellHeight (default? 'px') which is set when a string cellHeight with a unit is passed (ex: '10rem') */
   cellHeightUnit?: string;
 
+  /**
+   * one cell width (default?: 'auto'). Can be:
+   *  an integer (px)
+   *  a string (ex: '100px', '10em', '10rem'). Note: % doesn't right - see demo/cell-height.html
+   */
+  cellWidth?: numberOrString;
+
+  /** (internal) unit for cellWidth (default? 'px') which is set when a string cellWidth with a unit is passed (ex: '10rem') */
+  cellWidthUnit?: string;
+
   /** list of children item to create when calling load() or addGrid() */
   children?: GridStackWidget[];
 

@@ -10,6 +10,11 @@ export interface HeightData {
   unit: string;
 }
 
+export interface WidthData {
+  w: number;
+  unit: string;
+}
+
 /** checks for obsolete method names */
 // eslint-disable-next-line
 export function obsolete(self, f, oldName: string, newName: string, rev: string): (...args: any[]) => any {
@@ -170,23 +175,39 @@ export class Utils {
 
   static toNumber(value: null | string): number {
     return (value === null || value.length === 0) ? undefined : Number(value);
-  }
-
-  static parseHeight(val: numberOrString): HeightData {
-    let h: number;
-    let unit = 'px';
-    if (typeof val === 'string') {
-      let match = val.match(/^(-[0-9]+\.[0-9]+|[0-9]*\.[0-9]+|-[0-9]+|[0-9]+)(px|em|rem|vh|vw|%)?$/);
-      if (!match) {
-        throw new Error('Invalid height');
-      }
-      unit = match[2] || 'px';
-      h = parseFloat(match[1]);
-    } else {
-      h = val;
     }
-    return { h, unit };
-  }
+
+    static parseHeight(val: numberOrString): HeightData {
+        let h: number;
+        let unit = 'px';
+        if (typeof val === 'string') {
+            let match = val.match(/^(-[0-9]+\.[0-9]+|[0-9]*\.[0-9]+|-[0-9]+|[0-9]+)(px|em|rem|vh|vw|%)?$/);
+            if (!match) {
+                throw new Error('Invalid height');
+            }
+            unit = match[2] || 'px';
+            h = parseFloat(match[1]);
+        } else {
+            h = val;
+        }
+        return { h, unit };
+    }
+
+    static parseWidth(val: numberOrString): WidthData {
+        let w: number;
+        let unit = 'px';
+        if (typeof val === 'string') {
+            let match = val.match(/^(-[0-9]+\.[0-9]+|[0-9]*\.[0-9]+|-[0-9]+|[0-9]+)(px|em|rem|vh|vw|%)?$/);
+            if (!match) {
+                throw new Error('Invalid width');
+            }
+            unit = match[2] || 'px';
+            w = parseFloat(match[1]);
+        } else {
+            w = val;
+        }
+        return { w, unit };
+    }
 
   /** copies unset fields in target to use the given default sources values */
   // eslint-disable-next-line
